@@ -29,15 +29,23 @@ NS_LOG_COMPONENT_DEFINE("LtePdcpHeader");
 NS_OBJECT_ENSURE_REGISTERED(LtePdcpHeader);
 
 LtePdcpHeader::LtePdcpHeader()
-    : m_dcBit(0xff),
+    : m_ecn(0x00),
+      m_dcBit(0xff),
       m_sequenceNumber(0xfffa)
 {
 }
 
 LtePdcpHeader::~LtePdcpHeader()
 {
+    m_ecn = 0x00;
     m_dcBit = 0xff;
     m_sequenceNumber = 0xfffb;
+}
+
+void
+LtePdcpHeader::SetEcn(uint8_t ecn)
+{
+    m_ecn = ecn & 0x01;
 }
 
 void
@@ -50,6 +58,12 @@ void
 LtePdcpHeader::SetSequenceNumber(uint16_t sequenceNumber)
 {
     m_sequenceNumber = sequenceNumber & 0x0FFF;
+}
+
+uint8_t
+LtePdcpHeader::GetEcn() const
+{
+    return m_ecn;
 }
 
 uint8_t
@@ -83,7 +97,8 @@ LtePdcpHeader::GetInstanceTypeId() const
 void
 LtePdcpHeader::Print(std::ostream& os) const
 {
-    os << "D/C=" << (uint16_t)m_dcBit;
+    os << "ECN=" << (uint16_t)m_ecn;
+    os << " D/C=" << (uint16_t)m_dcBit;
     os << " SN=" << m_sequenceNumber;
 }
 
@@ -98,8 +113,10 @@ LtePdcpHeader::Serialize(Buffer::Iterator start) const
 {
     Buffer::Iterator i = start;
 
-    i.WriteU8((m_dcBit << 7) | (m_sequenceNumber & 0x0F00) >> 8);
-    i.WriteU8(m_sequenceNumber & 0x00FF);
+    i.WriteU8((m_dcBit << 7) | ((m_sequenceNumber & 0x0F00) >> 8) | ((m_ecn & 0x0F) << 4));
+    i.WriteU8((m_sequenceNumber & 0x00FF) | ((m_ecn & 0xF0) >> 4));
+    //i.WriteU8((m_dcBit << 7) | (m_sequenceNumber & 0x0F00) >> 8);
+    //i.WriteU8(m_sequenceNumber & 0x00FF);
 }
 
 uint32_t
@@ -114,7 +131,10 @@ LtePdcpHeader::Deserialize(Buffer::Iterator start)
     m_dcBit = (byte_1 & 0x80) > 7;
     // For now, we just support DATA PDUs
     NS_ASSERT(m_dcBit == DATA_PDU);
-    m_sequenceNumber = ((byte_1 & 0x0F) << 8) | byte_2;
+    uint16_t sequenceHighBits = (byte_1 & 0x0F) << 8;
+    uint16_t sequenceLowBits = byte_2 & 0x00FF;
+    m_sequenceNumber = sequenceHighBits | sequenceLowBits;
+    m_ecn = ((byte_1 & 0x70) >> 4) | ((byte_2 & 0x0F) << 4);
 
     return GetSerializedSize();
 }

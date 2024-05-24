@@ -49,6 +49,12 @@ class LtePdcpHeader : public Header
     /**
      * \brief Set DC bit
      *
+     * \param Set ecn bit to set
+     */
+    void SetEcn(uint8_t ecn);
+    /**
+     * \brief Set DC bit
+     *
      * \param dcBit DC bit to set
      */
     void SetDcBit(uint8_t dcBit);
@@ -58,7 +64,12 @@ class LtePdcpHeader : public Header
      * \param sequenceNumber sequence number
      */
     void SetSequenceNumber(uint16_t sequenceNumber);
-
+    /**
+     * \brief Get ECN bit
+     *
+     * \returns ECN bit
+     */
+    uint8_t GetEcn() const;
     /**
      * \brief Get DC bit
      *
@@ -91,6 +102,7 @@ class LtePdcpHeader : public Header
     uint32_t Deserialize(Buffer::Iterator start) override;
 
   private:
+    uint8_t m_ecn;           ///< the ECN bit
     uint8_t m_dcBit;           ///< the DC bit
     uint16_t m_sequenceNumber; ///< the sequence number
 };

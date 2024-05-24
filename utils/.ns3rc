@@ -13,11 +13,11 @@ set(ns3rc_enabled_modules)
 set(ns3rc_disabled_modules)
 
 # Set this equal to ON if you want examples to be run.
-set(ns3rc_examples_enabled OFF)
+set(ns3rc_examples_enabled ON)
 
 # Set this equal to ON if you want tests to be run.
-set(ns3rc_tests_enabled OFF)
+set(ns3rc_tests_enabled ON)
 
 # Override other ns-3 settings by setting their values below
 # Note: command-line settings will also be overridden.
-#set(NS3_LOG ON)
+set(NS3_LOG ON)
