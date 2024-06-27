@@ -171,6 +171,13 @@ LtePdcp::SetStatus(Status s)
 }
 
 ////////////////////////////////////////
+LtePdcpHeader
+LtePdcp::GetHeader() const{
+    LtePdcpHeader pdcpHeader = LtePdcpHeader();
+    pdcpHeader.SetSequenceNumber(m_txSequenceNumber);
+    pdcpHeader.SetDcBit(LtePdcpHeader::DATA_PDU);
+    return pdcpHeader;
+}
 
 void
 LtePdcp::DoTransmitPdcpSdu(LtePdcpSapProvider::TransmitPdcpSduParameters params)
@@ -181,7 +188,7 @@ LtePdcp::DoTransmitPdcpSdu(LtePdcpSapProvider::TransmitPdcpSduParameters params)
     // Sender timestamp
     PdcpTag pdcpTag(Simulator::Now());
 
-    LtePdcpHeader pdcpHeader;
+    LtePdcpHeader pdcpHeader = LtePdcpHeader();
     pdcpHeader.SetSequenceNumber(m_txSequenceNumber);
 
     m_txSequenceNumber++;

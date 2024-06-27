@@ -83,6 +83,12 @@ LteRlcAm::~LteRlcAm()
     NS_LOG_FUNCTION(this);
 }
 
+void
+LteRlcAm::SetWindowSize(int windowSize)
+{
+    m_windowSize = windowSize;
+}
+
 TypeId
 LteRlcAm::GetTypeId()
 {

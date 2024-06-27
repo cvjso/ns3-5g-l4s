@@ -20,6 +20,7 @@
 #ifndef LTE_PDCP_H
 #define LTE_PDCP_H
 
+#include "lte-pdcp-header.h"
 #include "lte-pdcp-sap.h"
 #include "lte-rlc-sap.h"
 
@@ -50,6 +51,7 @@ class LtePdcp : public Object // SimpleRefCount<LtePdcp>
     static TypeId GetTypeId();
     void DoDispose() override;
 
+    LtePdcpHeader GetHeader() const;
     /**
      *
      *

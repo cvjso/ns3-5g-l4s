@@ -226,7 +226,7 @@ UeManager::DoInitialize()
     {
         uint8_t lcid = 1;
 
-        Ptr<LteRlc> rlc = CreateObject<LteRlcAm>()->GetObject<LteRlc>();
+        Ptr<LteRlcAm> rlc = CreateObject<LteRlcAm>();
         rlc->SetLteMacSapProvider(m_rrc->m_macSapProvider);
         rlc->SetRnti(m_rnti);
         rlc->SetLcId(lcid);
@@ -237,6 +237,10 @@ UeManager::DoInitialize()
         pdcp->SetLtePdcpSapUser(m_drbPdcpSapUser);
         pdcp->SetLteRlcSapProvider(rlc->GetLteRlcSapProvider());
         rlc->SetLteRlcSapUser(pdcp->GetLteRlcSapUser());
+
+        if(pdcp->GetHeader().GetEcn() == 0x00){
+            rlc->SetWindowSize(256);
+        }
 
         m_srb1 = CreateObject<LteSignalingRadioBearerInfo>();
         m_srb1->m_rlc = rlc;

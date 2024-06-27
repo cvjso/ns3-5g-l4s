@@ -53,6 +53,9 @@ class LteRlcAm : public LteRlc
      */
     void DoTransmitPdcpPdu(Ptr<Packet> p) override;
 
+    // To change windowSize
+    void SetWindowSize(int windowSize);
+
     /**
      * MAC SAP
      *
